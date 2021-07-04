@@ -18,7 +18,10 @@ import { idbPromise } from "../utils/helpers";
 import spinner from '../assets/spinner.gif'
 
 function Detail() {
-  const {products, cart} = useSelector((state) => state);
+  // const {products, cart} = useSelector((state) => state);
+  const state = useSelector((state) => state.products);
+  // const {cart} = useSelector((state) => state.cart)
+  
   const dispatch = useDispatch();
 
   // const [state, dispatch] = useStoreContext();
@@ -28,7 +31,7 @@ function Detail() {
 
   const { loading, data } = useQuery(QUERY_PRODUCTS);
 
-  // const { products, cart } = state;
+  const { products, cart } = state;
 
   useEffect(() => {
     // already in global store
@@ -37,10 +40,7 @@ function Detail() {
     } 
     // retrieved from server
     else if (data) {
-      dispatch({
-        type: UPDATE_PRODUCTS,
-        products: data.products
-      });
+      dispatch(updateProducts());
 
       data.products.forEach((product) => {
         idbPromise('products', 'put', product);
@@ -106,12 +106,12 @@ function Detail() {
             <strong>Price:</strong>
             ${currentProduct.price}
             {" "}
-            <button onClick={addToCart}>
+            <button onClick={() => dispatch(addToCart())}>
               Add to Cart
             </button>
             <button 
               disabled={!cart.find(p => p._id === currentProduct._id)} 
-              onClick={removeFromCart}
+              onClick={() => dispatch(removeFromCart())}
             >
               Remove from Cart
             </button>
