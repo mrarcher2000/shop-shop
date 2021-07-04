@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { useQuery } from '@apollo/react-hooks';
 
 import Cart from "../components/Cart";
-import { useStoreContext } from "../utils/GlobalState";
+// import { useStoreContext } from "../utils/GlobalState";
 import { useSelector, useDispatch } from "react-redux";
 import { updateProducts, addToCart, addMultipleToCart, updateCartQuantity, removeFromCart, clearCart, toggleCart, updateCategories, updateCurrentCategory} from '../utils/productSlice';
 
@@ -18,15 +18,17 @@ import { idbPromise } from "../utils/helpers";
 import spinner from '../assets/spinner.gif'
 
 function Detail() {
-  const count = useSelector((state) => state.counter.value);
-  const [state, dispatch] = useStoreContext();
+  const {products, cart} = useSelector((state) => state);
+  const dispatch = useDispatch();
+
+  // const [state, dispatch] = useStoreContext();
   const { id } = useParams();
 
   const [currentProduct, setCurrentProduct] = useState({});
 
   const { loading, data } = useQuery(QUERY_PRODUCTS);
 
-  const { products, cart } = state;
+  // const { products, cart } = state;
 
   useEffect(() => {
     // already in global store
