@@ -4,6 +4,9 @@ import { useQuery } from '@apollo/react-hooks';
 
 import Cart from "../components/Cart";
 import { useStoreContext } from "../utils/GlobalState";
+import { useSelector, useDispatch } from "react-redux";
+import { updateProducts, addToCart, addMultipleToCart, updateCartQuantity, removeFromCart, clearCart, toggleCart, updateCategories, updateCurrentCategory} from '../utils/productSlice';
+
 import {
   REMOVE_FROM_CART,
   UPDATE_CART_QUANTITY,
@@ -15,6 +18,7 @@ import { idbPromise } from "../utils/helpers";
 import spinner from '../assets/spinner.gif'
 
 function Detail() {
+  const count = useSelector((state) => state.counter.value);
   const [state, dispatch] = useStoreContext();
   const { id } = useParams();
 
