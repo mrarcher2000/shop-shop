@@ -40,7 +40,10 @@ function Detail() {
     } 
     // retrieved from server
     else if (data) {
-      dispatch(updateProducts());
+      dispatch({
+        type: UPDATE_PRODUCTS,
+        products: data.products
+      });
 
       data.products.forEach((product) => {
         idbPromise('products', 'put', product);
