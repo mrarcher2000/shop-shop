@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { useQuery } from '@apollo/react-hooks';
 
 import Cart from "../components/Cart";
-// import { useStoreContext } from "../utils/GlobalState";
+import { useStoreContext } from "../utils/GlobalState";
 import { useSelector, useDispatch } from "react-redux";
 import { updateProducts, addToCart, addMultipleToCart, updateCartQuantity, removeFromCart, clearCart, toggleCart, updateCategories, updateCurrentCategory} from '../utils/productSlice';
 
@@ -18,25 +18,39 @@ import { idbPromise } from "../utils/helpers";
 import spinner from '../assets/spinner.gif'
 
 function Detail() {
-  // const {products, cart} = useSelector((state) => state);
-  const state = useSelector((state) => state.products);
+
+  const {products} = useSelector((state) => state);
+  // const [state, dispatch] = useStoreContext();
+  const { id } = useParams();
+
+
+  const [currentProduct, setCurrentProduct] = useState(products);
+
+  
+
+  // const initialState = createSelector(
+  //   (products) => products.products,
+  //   (cart) => cart.cart,
+  // )
+
+  // const {products, cart} = useSelector(initialState);
+  // const state = useSelector((state) => state);
   // const {cart} = useSelector((state) => state.cart)
   
   const dispatch = useDispatch();
 
-  // const [state, dispatch] = useStoreContext();
-  const { id } = useParams();
-
-  const [currentProduct, setCurrentProduct] = useState({});
 
   const { loading, data } = useQuery(QUERY_PRODUCTS);
+  // const {products, cart } = state;
 
-  const { products, cart } = state;
 
   useEffect(() => {
+
+    window.addEventListener('load', console.log(currentProduct));
     // already in global store
     if (products.length) {
       setCurrentProduct(products.find(product => product._id === id));
+      console.log(currentProduct);
     } 
     // retrieved from server
     else if (data) {
@@ -56,12 +70,13 @@ function Detail() {
           type: UPDATE_PRODUCTS,
           products: indexedProducts
         });
+
       });
     }
   }, [products, data, loading, dispatch, id]);
 
   const addToCart = () => {
-    const itemInCart = cart.find((cartItem) => cartItem._id === id)
+    const itemInCart = products.cart.find((cartItem) => cartItem._id === id)
     if (itemInCart) {
       dispatch({
         type: UPDATE_CART_QUANTITY,
@@ -93,7 +108,7 @@ function Detail() {
 
   return (
     <>
-      {currentProduct && cart ? (
+      {currentProduct && products.cart ? (
         <div className="container my-1">
           <Link to="/">
             ← Back to Products
@@ -113,7 +128,7 @@ function Detail() {
               Add to Cart
             </button>
             <button 
-              disabled={!cart.find(p => p._id === currentProduct._id)} 
+              disabled={!products.cart.find(p => p._id === currentProduct._id)} 
               onClick={() => dispatch(removeFromCart())}
             >
               Remove from Cart

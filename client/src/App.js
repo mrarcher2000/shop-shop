@@ -2,6 +2,9 @@ import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { ApolloProvider } from '@apollo/react-hooks';
 import ApolloClient from 'apollo-boost';
+import {createStore} from 'redux';
+import {connect} from 'react-redux';
+
 
 import Home from "./pages/Home";
 import Detail from "./pages/Detail";
@@ -25,7 +28,14 @@ const client = new ApolloClient({
   uri: '/graphql',
 })
 
+
+const mapStateToProps = state => ({
+  products: state.products
+});
+
 function App() {
+
+
   return (
     <ApolloProvider client={client}>
       <Router>
@@ -49,4 +59,4 @@ function App() {
   );
 }
 
-export default App;
+export default connect(mapStateToProps)(App);

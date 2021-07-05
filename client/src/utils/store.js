@@ -3,7 +3,7 @@ import productReducer from './productSlice';
 
 export default configureStore({
     reducer: {
-        products: productReducer,
+        products: productReducer
     },
 });
 
